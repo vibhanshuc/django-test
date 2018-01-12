@@ -1,0 +1,237 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Anixy.co</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static '/vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="{% static '/vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="{% static '/vendors/nprogress/nprogress.css' %}" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="{% static '/vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+
+    <!-- bootstrap-progressbar -->
+    <link href="{% static '/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
+    <!-- JQVMap -->
+    <link href="{% static '/vendors/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
+    <!-- bootstrap-daterangepicker -->
+    <link href="{% static '/vendors/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="{% static '/build/css/custom.min.css' %}" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="/" class="site_title"><i class="fa fa-shield"></i> <span>ANIXY</span></a>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <!-- menu profile quick info -->
+                <div class="profile clearfix">
+                    <div class="profile_pic">
+                        <img src="{{ MEDIA_URL }}{{ gymImage }}" alt="Logo" class="img-circle profile_img">
+                    </div>
+                    <div class="profile_info">
+                        <span>Welcome, {{ user|title }}</span>
+                        <h2>{{ gymName|upper }}</h2>
+                        <h6>(Gym id: {{ gymNumber }})</h6>
+                    </div>
+                </div>
+                <!-- /menu profile quick info -->
+
+                <br/>
+
+                <!-- sidebar menu -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <h3>General</h3>
+                        <ul class="nav side-menu">
+                            <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> Dashboard</a>
+
+                            </li>
+                            <li><a href="{% url 'memberRegistration' %}"><i class="fa fa-edit"></i> Register Member </a>
+
+                            </li>
+                            <li><a href="{% url 'clientActivatePlan' %}"><i class="fa fa-desktop"></i> Plan
+                                Renew/Upgrade </a>
+
+                            </li>
+                            <li><a><i class="fa fa-table"></i> Reports <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'export_users_csv' %}"> Member Details</a></li>
+                                    <li><a href="{% url 'export_monthly_report' %}">Current Month Report</a></li>
+                                    <li><a href="{% url 'current_month_income' %}">Current Month Income</a></li>
+                                    <li><a href="{% url 'last_month_income' %}">Last Month Income</a></li>
+                                    <li><a href="{% url 'total_income' %}">Total Income</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-search"></i> Search <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'usersearch' %}">Search Member</a></li>
+                                    <li><a href="{% url 'staffsearch' %}">Search Staff</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="{% url 'edituser' %}"><i class="fa fa-eraser"></i> Edit/Delete Member </a>
+                        </ul>
+                    </div>
+                    <div class="menu_section">
+                        <h3>Admin Controls</h3>
+                        <ul class="nav side-menu">
+                            <li><a href="{% url 'clientRegistration' %}"><i class="fa fa-line-chart"></i> Register
+                                Business </a></li>
+                            <li><a><i class="fa fa-briefcase"></i> Subscription Plans <span
+                                    class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'clientPlans' %}"> Create New Plan</a></li>
+                                    <li><a href="{% url 'deactivePlan' %}">Activate/Deactivate Plan</a></li>
+                                </ul>
+                            </li>
+
+                            <li><a><i class="fa fa-users"></i> My Staff <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{% url 'staffRegistration' %}"> Register Staff</a></li>
+                                    <li><a href="{% url 'deactiveStaff' %}">Activate/Deactivate/Edit Staff</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="{% url 'billing' %}"><i class="fa fa-money"></i> Billing </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+                <!-- /sidebar menu -->
+
+                <!-- /menu footer buttons -->
+                <div class="sidebar-footer hidden-small">
+                    <a data-toggle="tooltip" data-placement="top" title="Edit" href="{% url 'clientEdit' %}">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="FullScreen" href="javascript: void(0)"
+                       onclick="popup('/')">
+                        <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Lock" href="{% url 'payment' %}">
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    </a>
+                    <a data-toggle="tooltip" data-placement="top" title="Logout" href="/accounts/logout">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                    </a>
+                </div>
+                <!-- /menu footer buttons -->
+            </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <nav>
+                    <div class="nav toggle">
+                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                    </div>
+
+
+                </nav>
+            </div>
+        </div>
+        <!-- /top navigation -->
+
+        <!-- page content -->
+        <div class="right_col" role="main">
+            <!-- top tiles -->
+            <div class="row tile_count">
+
+                <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                    {% block title %}
+
+                    {% endblock %}
+                </div>
+
+            </div>
+            <!-- /top tiles -->
+
+            {% block message %}
+            {% endblock %}
+
+
+
+            <br/>
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    {% block content %}
+
+                    {% endblock %}
+                </div>
+            </div>
+
+
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+            <div class="pull-right">
+                <a href="#">Anixy</a>
+            </div>
+            <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
+    </div>
+</div>
+
+<!-- jQuery -->
+<script src="{% static '/vendors/jquery/dist/jquery.min.js' %}"></script>
+<!-- Bootstrap -->
+<script src="{% static '/vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<!-- FastClick -->
+<script src="{% static '/vendors/fastclick/lib/fastclick.js' %}"></script>
+<!-- NProgress -->
+<script src="{% static '/vendors/nprogress/nprogress.js' %}"></script>
+<!-- gauge.js -->
+<!-- bootstrap-progressbar -->
+<script src="{% static '/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js' %}"></script>
+<!-- iCheck -->
+<script src="{% static '/vendors/iCheck/icheck.min.js' %}"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="{% static '/vendors/moment/min/moment.min.js' %}"></script>
+<script src="{% static '/vendors/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+
+<!-- Custom Theme Scripts -->
+<script src="{% static '/build/js/custom.min.js' %}"></script>
+
+
+<script type="text/javascript">
+    <!--
+    function popup(url) {
+        var params = 'width=' + screen.width;
+        params += ', height=' + screen.height;
+        params += ', top=0, left=0';
+        params += ', fullscreen=yes';
+
+        newwin = window.open(url, 'windowname4', params);
+        if (window.focus) {
+            newwin.focus()
+        }
+        return false;
+    }
+
+    // -->
+</script>
+
+</body>
+</html>
