@@ -1,4 +1,4 @@
-from appRegistration.models import gymDetails, memberDetails
+from .models import gymDetails, memberDetails
 from django.contrib import admin
 
 # Register your models here.
