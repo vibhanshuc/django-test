@@ -423,7 +423,7 @@ def export_monthly_report(request):
         return HttpResponseRedirect("/client/register/")
     # End
     User = get_user_model()
-    currentMonthStarting = datetime.date.today().replace(day=1)
+    currentMonthStarting = datetime.today().replace(day=1)
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
     for elements in gymObj:
         gymNumber = elements['gymNumber']
@@ -468,7 +468,7 @@ def current_month_income(request):
         return HttpResponseRedirect("/client/register/")
     # End
     User = get_user_model()
-    currentMonthStarting = datetime.date.today().replace(day=1)
+    currentMonthStarting = datetime.today().replace(day=1)
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
     for elements in gymObj:
         gymNumber = elements['gymNumber']
@@ -519,7 +519,7 @@ def last_month_income(request):
         return HttpResponseRedirect("/client/register/")
     # End
     User = get_user_model()
-    currentMonthStarting = datetime.date.today().replace(day=1)
+    currentMonthStarting = datetime.today().replace(day=1)
     lastMonthSameday = datetime.now() + timedelta(days=-30)
     lastMonth = lastMonthSameday.replace(day=1)
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
