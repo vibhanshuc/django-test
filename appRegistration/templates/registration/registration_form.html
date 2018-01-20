@@ -4,7 +4,7 @@
     <section id="content">
         <div class="content-wrap">
             <div class="container clearfix">
-                <div class="accordion accordion-lg divcenter nobottommargin clearfix" style="max-width: 550px;">
+                <div class="accordion accordion-lg divcenter clearfix" style="max-width: 550px;">
 
                     <div class="acctitle"><i class="acc-closed icon-lock3"></i><i class="acc-open icon-unlock"></i>
                         <h1>Client Login</h1></div>
@@ -12,8 +12,7 @@
                         <form id="login-form" name="login-form" class="nobottommargin" action="." method="post">
                             {% csrf_token %}
                             {{ form.as_p }}
-                            <input class="button button-3d button-black nomargin" type="submit"
-                                   value="{% trans 'Submit' %}"/>
+                            <input class="btn btn-primary" type="submit" value="{% trans 'Submit' %}"/>
 
                         </form>
                     </div>
@@ -23,7 +22,5 @@
             </div>
         </div>
     </section><!-- #content end -->
-
-
 
 {% endblock %}

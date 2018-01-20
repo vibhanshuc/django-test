@@ -1,10 +1,9 @@
-from django.conf.urls import url
-
+from django.conf.urls import url, include
 from . import views
 
 urlpatterns = [
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
-    # url(r'^accounts/', include('registration.backends.hmac.urls')),
+    url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^client/register/$', views.clientRegistration, name='clientRegistration'),
     url(r'^client/plans/$', views.clientPlans, name='clientPlans'),
     url(r'^client/activateplan/$', views.clientActivatePlan, name='clientActivatePlan'),

@@ -294,7 +294,7 @@ class gymPlans(models.Model):
     planStatus = models.BooleanField('Plan Active', default=True)
 
     def __str__(self):
-        return str(self.planName + self.planGymNumber)
+        return str(self.planName + str(self.planGymNumber))
 
 
 class staffDetails(models.Model):

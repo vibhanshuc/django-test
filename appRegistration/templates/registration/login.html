@@ -10,10 +10,10 @@
                         to your Account
                     </div>
                     <div class="acc_content clearfix">
-                        <form id="login-form" name="login-form" class="nobottommargin" action="." method="post">
+                        <form id="login-form" name="login-form" action="." method="post">
                             {% csrf_token %}
                             {{ form.as_p }}
-                            <input class="button button-3d button-black nomargin" type="submit"
+                            <input class="btn btn-primary" type="submit"
                                    value="{% trans 'Log in' %}"/>
                             <input type="hidden" name="next" value="{{ next }}"/>
 

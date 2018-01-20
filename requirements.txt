@@ -1,6 +1,8 @@
 certifi==2017.11.5
 chardet==3.0.4
+confusable-homoglyphs==2.0.2
 Django==2.0.1
+django-registration==2.3
 gunicorn==19.7.1
 idna==2.6
 instamojo-wrapper==1.1

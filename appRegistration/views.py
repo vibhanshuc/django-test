@@ -1,9 +1,5 @@
 import csv
-from datetime import datetime, timedelta
-from main.views import commonDisplay, activaPlans, deactivaPlans
-from .forms import gymDetailsForm, gymPlansForm, \
-    memberActivatePlanForm, memberDetailsForm, staffDetailsForm
-from .models import gymDetails, memberDetails, gymPlans, staffDetails
+from datetime import date, datetime, timedelta
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -11,13 +7,17 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from instamojo_wrapper import Instamojo
 
+from main.views import commonDisplay, activaPlans, deactivaPlans
+from .forms import gymDetailsForm, gymPlansForm, \
+    memberActivatePlanForm, memberDetailsForm, staffDetailsForm
+from .models import gymDetails, memberDetails, gymPlans, staffDetails
+
 
 # Create your views here.
 @login_required
 def dashboard(request):
     # Start: Ensure Gym is registered first
     User = get_user_model()
-    userId = User.id
     gymRegistered = False
     allGymNumbers = gymDetails.objects.all().values('gymUser_id')
     for i in allGymNumbers:
@@ -27,20 +27,9 @@ def dashboard(request):
         return HttpResponseRedirect("/client/register/")
     # End
     last30Days = datetime.now() + timedelta(days=-30)
-    print('last30days is:', last30Days)
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
     for elements in gymObj:
         gymNumber = elements['gymNumber']
-    # Start: Calculate billing
-    today = datetime.now()
-    # Update status of users whose subscrition plans have expired
-    activeMembers = memberDetails.objects.filter(memberPlandExpiryDate__lte=datetime.now(),
-                                                 memberStatus=1).update(memberStatus=0)
-    print('........')
-    print(activeMembers)
-    billableAmount = activeMembers * 60
-    # End
-
     totalNumberOfMembers = memberDetails.objects.filter(memberGymNumber_id=gymNumber).count()
     totalActiveMembers = memberDetails.objects.filter(memberGymNumber_id=gymNumber, memberStatus=1).count()
     newMembers = memberDetails.objects.filter(memberGymNumber_id=gymNumber,
@@ -52,42 +41,31 @@ def dashboard(request):
                                                        memberGymNumber_id=gymNumber).values()
     totalCollection = 0
     for items in total_Subscriptions:
-        print(items['memberPlan'])
         obj = gymPlans.objects.filter(planName=items['memberPlan'], planGymNumber_id=gymNumber).values()
         for i in obj:
             price = i['planPrice']
             totalCollection = totalCollection + price
 
     # Start: Today's Stats calculation
-    midnight = datetime.combine(datetime.date(), datetime.now())
     totalActiveStaff = staffDetails.objects.filter(staffGymNumber_id=gymNumber, staffStatus=1).count()
-    today_newMembers = memberDetails.objects.filter(memberRegistrationDate__gte=(midnight),
+    today_newMembers = memberDetails.objects.filter(memberRegistrationDate__gte=(date.today()),
                                                     memberGymNumber_id=gymNumber, ).count()
-    today_maleCount = memberDetails.objects.filter(memberRegistrationDate__gte=(midnight), memberGender='M',
+    today_maleCount = memberDetails.objects.filter(memberRegistrationDate__gte=(date.today()), memberGender='M',
                                                    memberGymNumber_id=gymNumber).count()
-    today_femaleCount = memberDetails.objects.filter(memberRegistrationDate__gte=(midnight), memberGender='F',
+    today_femaleCount = memberDetails.objects.filter(memberRegistrationDate__gte=(date.today()), memberGender='F',
                                                      memberGymNumber_id=gymNumber).count()
-    today_Subscriptions = memberDetails.objects.filter(memberPlanActivationDate__gte=(midnight),
+    today_Subscriptions = memberDetails.objects.filter(memberPlanActivationDate__gte=(date.today()),
                                                        memberGymNumber_id=gymNumber).values()
     todaysCollection = 0
     for items in today_Subscriptions:
-        print(items['memberPlan'])
         obj = gymPlans.objects.filter(planName=items['memberPlan'], planGymNumber_id=gymNumber).values()
         for i in obj:
             price = i['planPrice']
-            print(price)
             todaysCollection = todaysCollection + price
 
     last30daysExpired = memberDetails.objects.filter(memberPlandExpiryDate__range=(last30Days, datetime.now()),
                                                      memberGymNumber_id=gymNumber).values().order_by(
         'memberPlandExpiryDate').reverse()
-    print('LLLLLLLLLL')
-    memberNames = ['None']
-    memberContactNumber = ['None']
-    memberEmail = ['None']
-    memberPlan = ['None']
-    memberPlanActivationDate = ['None']
-    memberPlandExpiryDate = ['None']
     expired_as_dict = []
     for names in last30daysExpired:
         # memberNames.append(names['memberName'])
@@ -101,22 +79,26 @@ def dashboard(request):
             'memberPlandExpiryDate': names['memberPlandExpiryDate']
         }
         expired_as_dict.append(my_dict)
-    print(expired_as_dict)
     common = commonDisplay(request)
-    context = {'totalNumberOfMembers': totalNumberOfMembers, 'totalActiveMembers': totalActiveMembers,
-               'newMembers': newMembers, 'maleCount': maleCount, 'femaleCount': femaleCount,
-               'totalActiveStaff': totalActiveStaff,
-               'today_newMembers': today_newMembers, 'today_maleCount': today_maleCount,
-               'today_femaleCount': today_femaleCount,
-               'todaysCollection': todaysCollection, 'totalCollection': totalCollection,
-               'expired_as_dict': expired_as_dict}
+    context = {
+        'totalNumberOfMembers': totalNumberOfMembers,
+        'totalActiveMembers': totalActiveMembers,
+        'newMembers': newMembers,
+        'maleCount': maleCount, 'femaleCount': femaleCount,
+        'totalActiveStaff': totalActiveStaff,
+        'today_newMembers': today_newMembers,
+        'today_maleCount': today_maleCount,
+        'today_femaleCount': today_femaleCount,
+        'todaysCollection': todaysCollection,
+        'totalCollection': totalCollection,
+        'expired_as_dict': expired_as_dict
+    }
     finalContext = {**common, **context}  # append the dictionaries
     return render(request, 'dashboard.html', context=finalContext)
 
 
 @login_required
 def clientRegistration(request):
-    common = commonDisplay(request)
     form = gymDetailsForm(request.POST or None)
     emptyDB = True
     x = gymDetails.objects.all().values('gymNumber')
@@ -909,10 +891,8 @@ def deactivePlan(request):
         if form.is_valid():
             print('inside form')
             input = form.cleaned_data['Search']
-            print(input)
             try:
                 my_record = gymPlans.objects.get(planName__iexact=input, planGymNumber_id=gymNumber)
-                print(my_record.id)
                 form = gymPlansForm(instance=my_record)
                 form.fields['planName'].widget.attrs['readonly'] = True
                 form.fields['planDuration'].widget.attrs['readonly'] = True
@@ -924,7 +904,6 @@ def deactivePlan(request):
                 messages.error(request, 'ERROR! Plan not found. Please check the plan name entered.')
     elif 'deactivate' in request.POST:
         try:
-            print
             input = request.POST['planName']
 
             my_record = gymPlans.objects.get(planName__iexact=input, planGymNumber_id=gymNumber)
@@ -973,7 +952,6 @@ def deactiveStaff(request):
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
     for elements in gymObj:
         gymNumber = elements['gymNumber']
-    print(request.POST)
     form = memberActivatePlanForm(request.POST or None)
     if 'Search' in request.POST:
         print('???????????')
@@ -995,7 +973,6 @@ def deactiveStaff(request):
                 messages.error(request, 'ERROR! Plan not found. Please check the plan name entered.')
     elif 'deactivate' in request.POST:
         try:
-            print(request.POST)
             input = request.POST['staffContactNumber']
 
             my_record = staffDetails.objects.get(staffContactNumber=input, staffGymNumber_id=gymNumber)
@@ -1063,7 +1040,6 @@ def billing(request):
         gymNumber = elements['gymNumber']
         gymContactNum = elements['gymContactNumber']
         gymEmail = elements['gymEmail']
-    user = request.user.username
     userId = request.user.id
     print('UserID is:', userId)
     # Update status of users whose subscrition plans have expired
@@ -1072,15 +1048,15 @@ def billing(request):
     billableAmount = totalActiveMembers * amountPerMember
     # End
     # Create a new Payment Request
-    response = api.payment_request_create(
-        amount=billableAmount,
-        purpose='Gym_' + str(gymNumber) + '_' + str(datetime.date.today()),
-        send_email=True,
-        email=gymEmail,
-        buyer_name=user + '_id:' + str(userId),
-        # phone=gymContactNum,
-        redirect_url="http://127.0.0.1:8000/sucess/",
-    )
+    # response = api.payment_request_create(
+    #     amount=billableAmount,
+    #     purpose='Gym_' + str(gymNumber) + '_' + str(datetime.today()),
+    #     send_email=True,
+    #     email=gymEmail,
+    #     buyer_name=user + '_id:' + str(userId),
+    #     # phone=gymContactNum,
+    #     redirect_url="http://127.0.0.1:8000/sucess/",
+    # )
 
     # Create a new Payment Request
     # response = api.payment_request_create(
@@ -1093,11 +1069,10 @@ def billing(request):
     #    	redirect_url="http://127.0.0.1:8000/sucess/",
     #     )
     # print the long URL of the payment request.
-    print(response['payment_request']['longurl'])
-    payment_link = response['payment_request']['longurl']
-    context = {'totalActiveMembers': totalActiveMembers, 'billableAmount': billableAmount,
+    context = {'totalActiveMembers': totalActiveMembers,
+               'billableAmount': billableAmount,
                'amountPerMember': amountPerMember,
-               'payment_link': payment_link}
+               'payment_link': ''}
     common = commonDisplay(request)
     activePlans = activaPlans(request)
     deactivePlans = deactivaPlans(request)
