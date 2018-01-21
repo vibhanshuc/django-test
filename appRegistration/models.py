@@ -22,7 +22,7 @@ class memberDetails(models.Model):
     memberContactNumber = models.IntegerField('Contact Number', max_length=14)
     identificationMark = models.CharField('Identification Mark', max_length=200) # Added by Ravi
     memberHeight = models.IntegerField('Height (in cms)', max_length=3) # Added by Ravi
-    memberWeight = models.IntegerFiled('Weight (in kgs)', max_length=3) # Added by Ravi
+    memberWeight = models.IntegerField('Weight (in kgs)', max_length=3) # Added by Ravi
     memberEmergencyNumber = models.IntegerField('Emergency Contact Number', max_length=14, blank=True)
     memberEmail = models.EmailField('Email ID', max_length=100)
     memberRegistrationDate = models.DateTimeField('Registration Date')
