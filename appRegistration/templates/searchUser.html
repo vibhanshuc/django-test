@@ -38,40 +38,39 @@
                 </form>
             </div>
         </div>
-        {% if name %}
+        {% for member in members %}
             <div class="col-md-6 col-sm-6 col-xs-12 x_panel">
                 <div class=" profile_view">
                     <div class="col-sm-12">
-                        <h4 class="brief"><i>{{ name }}</i></h4>
+                        <h4 class="brief"><i>{{ member.memberName }}</i></h4>
                         <div class="left col-xs-7">
-                            <!-- <h2><strong>Name: </strong>{{name}}</h2> -->
-                            <!-- <p><strong>Email: </strong> {{memberEmail}} </p>
-		      <p><strong>Registration Date: </strong> {{registrationDate}} </p> -->
                             <ul class="list-unstyled">
-                                <li><i class="fa fa-home"></i><strong> Address:</strong> {{ memberAddress }}  </li>
-                                <li><i class="fa fa-map-marker"></i><strong> City:</strong> {{ memberCity }}  </li>
-                                <li><i class="fa fa-info"></i><strong> Pincode:</strong> {{ memberPincode }}  </li>
-                                <li><i class="fa fa-users"></i><strong> Gender:</strong> {{ memberGender }}  </li>
-                                <li><i class="fa fa-phone-square"></i><strong> Contact
-                                    Number: </strong>{{ memberContactNumber }}  </li>
-                                <li><i class="fa fa-phone"></i><strong> Emergency
-                                    Number:</strong> {{ memberEmergencyNumber }}  </li>
-                                <li><i class="fa fa-envelope"></i><strong> Email:</strong> {{ memberEmail }} </li>
-                                <li><i class="fa fa-check"></i><strong> Member ID:</strong> {{ memberId }}  </li>
+                                <li><i class="fa fa-calendar"></i><strong> Date of Birth</strong> {{ member.dateOfBirth }}  </li>
+                                <li><i class="fa fa-user"></i><strong> Father name</strong> {{ member.fatherName }}  </li>
+                                <li><i class="fa fa-home"></i><strong> Address1:</strong> {{ member.memberAddress1 }}  </li>
+                                <li><i class="fa fa-map-marker"></i><strong> City1:</strong> {{ member.memberCity1 }}  </li>
+                                <li><i class="fa fa-info"></i><strong> Pincode1:</strong> {{ member.memberPincode1 }}  </li>
+                                <li><i class="fa fa-home"></i><strong> Address2:</strong> {{ member.memberAddress2 }}  </li>
+                                <li><i class="fa fa-map-marker"></i><strong> City2:</strong> {{ member.memberCity2 }}  </li>
+                                <li><i class="fa fa-info"></i><strong> Pincode2:</strong> {{ member.memberPincode2 }}  </li>
+                                <li><i class="fa fa-users"></i><strong> Gender:</strong> {{ member.memberGender }}  </li>
+                                <li><i class="fa fa-phone-square"></i><strong> Contact Number: </strong>{{ member.memberContactNumber }}  </li>
+                                <li><i class="fa fa-phone"></i><strong> Emergency Number:</strong> {{ member.memberEmergencyNumber }}  </li>
+                                <li><i class="fa fa-envelope"></i><strong> Email:</strong> {{ member.memberEmail }} </li>
+                                <li><i class="fa fa-check"></i><strong> Member Number:</strong> {{ member.memberNumber }}  </li>
                             </ul>
                         </div>
                         <div class="right col-xs-5 ">
                             <ul class="list-unstyled">
-
-                                <li><i class="fa fa-star"></i><strong> Registration
-                                    Date:</strong> {{ registrationDate }}  </li>
-                                <li><i class="fa fa-clock-o"></i><strong> Last Plan Activation
-                                    Date:</strong> {{ memberPlanActivationDate }}  </li>
-                                <li><i class="fa fa-thumbs-down"></i><strong> Last Plan Expiry
-                                    Date: </strong> {{ memberPlandExpiryDate }}  </li>
-                                <li><i class="fa fa-eye"></i><strong> Status:</strong> {% if status %} Active {% else %}
-                                    Inactive{% endif %} </li>
-                                <li><i class="fa fa-book"></i><strong> Plan:</strong> {{ activeMemberPlan }}  </li>
+                                <li><i class="fa fa-check-circle"></i><strong>Identification Mark </strong> {{ member.identficationMark }}  </li>
+                                <li><i class="fa fa-random"></i><strong>Height (in cms) </strong> {{ member.memberHeight }}  </li>
+                                <li><i class="fa fa-check-circle"></i><strong>Weight (in KG) </strong> {{ member.memberWeight }}  </li>
+                                <li><i class="fa fa-star"></i><strong> Registration Date:</strong> {{ member.memberRegistrationDate }}  </li>
+                                <li><i class="fa fa-clock-o"></i><strong> Last Plan Activation Date:</strong> {{ member.memberPlanActivationDate }}  </li>
+                                <li><i class="fa fa-thumbs-down"></i><strong> Last Plan Expiry Date: </strong> {{ member.memberPlandExpiryDate }}  </li>
+                                <li><i class="fa fa-eye"></i><strong> Status:</strong> {% if member.memberStatus %} Active {% else %} Inactive{% endif %} </li>
+                                <li><i class="fa fa-book"></i><strong> Problems (if any):</strong> {{ member.memberProblems }}  </li>
+                                <li><i class="fa fa-book"></i><strong> Plan:</strong> {{ member.memberPlan }}  </li>
                             </ul>
 
                         </div>
@@ -79,7 +78,7 @@
 
                 </div>
             </div>
-        {% endif %}
+        {% endfor %}
     </div>
 
     <div class="col-md-6 col-sm-6 col-xs-12">

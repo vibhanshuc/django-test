@@ -17,7 +17,7 @@ class memberDetails(models.Model):
     memberCity2 = models.CharField('City', max_length=100, blank=True)
     memberPincode2 = models.IntegerField('Pincode', null=True)
 
-    memberContactNumber = models.IntegerField('Contact Number', max_length=14)
+    memberContactNumber = models.IntegerField('Contact Number')
     identificationMark = models.CharField('Identification Mark', max_length=200, blank=True)  # Added by Ravi
     memberHeight = models.IntegerField('Height (in cms)', null=True)  # Added by Ravi
     memberWeight = models.IntegerField('Weight (in kgs)', null=True)  # Added by Ravi

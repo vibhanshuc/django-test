@@ -1,5 +1,6 @@
 import csv
 from datetime import date, datetime, timedelta
+
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -370,8 +371,6 @@ def clientActivatePlan(request):
 @login_required
 def export_users_csv(request):
     # Start: Ensure Gym is registered first
-    User = get_user_model()
-    userId = User.id
     gymRegistered = False
     allGymNumbers = gymDetails.objects.all().values('gymUser_id')
     for i in allGymNumbers:
@@ -380,7 +379,6 @@ def export_users_csv(request):
     if not gymRegistered:
         return HttpResponseRedirect("/client/register/")
     # End
-    User = get_user_model()
     response = HttpResponse(content_type='text/csv')
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
     for elements in gymObj:
@@ -389,7 +387,7 @@ def export_users_csv(request):
 
     writer = csv.writer(response)
     writer.writerow(['Name', 'Father Name', 'Date Of Birth', 'Address 1', 'City 1', 'Pincode 1', 'Address 2', 'City 2',
-                     'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight' 'Emergency Contact',
+                     'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight', 'Emergency Contact',
                      'Email', 'Registration Date', 'Member Number', 'Status', 'Gender', 'Subscription Plan',
                      'Last Plan Activation Date', 'Plan Expiry Date'])
 
@@ -438,7 +436,7 @@ def export_monthly_report(request):
 
     writer = csv.writer(response)
     writer.writerow(['Name', 'Father Name', 'Date Of Birth', 'Address 1', 'City 1', 'Pincode 1', 'Address 2', 'City 2',
-                     'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight' 'Emergency Contact',
+                     'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight', 'Emergency Contact',
                      'Email', 'Registration Date', 'Member Number', 'Status', 'Gender', 'Subscription Plan',
                      'Last Plan Activation Date', 'Plan Expiry Date'])
 
@@ -626,19 +624,14 @@ def total_income(request):
 @login_required
 def usersearch(request):
     # Start: Ensure Gym is registered first
-    User = get_user_model()
-    userId = User.id
     gymRegistered = False
     allGymNumbers = gymDetails.objects.all().values('gymUser_id')
-    for i in allGymNumbers:
-        if i['gymUser_id'] == request.user.id:
+    for member in allGymNumbers:
+        if member['gymUser_id'] == request.user.id:
             gymRegistered = True
     if not gymRegistered:
         return HttpResponseRedirect("/client/register/")
     # End
-
-    last30Days = datetime.now() + timedelta(days=-30)
-    print('last30days is:', last30Days)
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
     for elements in gymObj:
         gymNumber = elements['gymNumber']
@@ -651,45 +644,32 @@ def usersearch(request):
     femaleCount = memberDetails.objects.filter(memberGender='F', memberGymNumber_id=gymNumber).count()
 
     form = memberActivatePlanForm(request.POST or None)
-    context = {'form': form, 'totalNumberOfMembers': totalNumberOfMembers, 'totalActiveMembers': totalActiveMembers,
-               'maleCount': maleCount, 'femaleCount': femaleCount, 'newMembers': newMembers}
+    context = {
+        'form': form,
+        'totalNumberOfMembers': totalNumberOfMembers,
+        'totalActiveMembers': totalActiveMembers,
+        'maleCount': maleCount,
+        'femaleCount': femaleCount,
+        'newMembers': newMembers}
 
     if form.is_valid():
         input = form.cleaned_data['Search']
-        print(input)
         gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
-        for i in gymObj:
-            gymNumber = i['gymNumber']
+        for gym in gymObj:
+            gymNumber = gym['gymNumber']
         try:
-            member = memberDetails.objects.filter(memberContactNumber=input, memberGymNumber_id=gymNumber).values()
-            if not member:
+            members = memberDetails.objects.filter(memberContactNumber=input, memberGymNumber_id=gymNumber).values()
+            if not members:
                 messages.error(request, 'ERROR! Number not registered in system. Please check the entered number.')
-            for i in member:
-                name = i['memberName']
-                memberEmail = i['memberEmail']
-                memberAddress = i['memberAddress']
-                memberCity = i['memberCity']
-                memberPincode = i['memberPincode']
-                memberContactNumber = i['memberContactNumber']
-                memberEmergencyNumber = i['memberEmergencyNumber']
-                registrationDate = i['memberRegistrationDate']
-                status = i['memberStatus']
-                memberId = i['memberNumber']
-                memberGender = i['memberGender']
-                activeMemberPlan = i['memberPlan']
-                memberPlanActivationDate = i['memberPlanActivationDate']
-                memberPlandExpiryDate = i['memberPlandExpiryDate']
-                buttontext = 'Update'
-
-                context = {'form': form, 'name': name, 'memberEmail': memberEmail, 'registrationDate': registrationDate,
-                           'status': status, 'memberId': memberId, 'activeMemberPlan': activeMemberPlan,
-                           'memberPlanActivationDate': memberPlanActivationDate,
-                           'memberAddress': memberAddress, 'memberCity': memberCity, 'memberPincode': memberPincode,
-                           'memberContactNumber': memberContactNumber,
-                           'memberEmergencyNumber': memberEmergencyNumber, 'memberGender': memberGender,
-                           'memberPlandExpiryDate': memberPlandExpiryDate, 'buttontext': buttontext,
-                           'totalNumberOfMembers': totalNumberOfMembers, 'totalActiveMembers': totalActiveMembers,
-                           'maleCount': maleCount, 'femaleCount': femaleCount, 'newMembers': newMembers}
+            context = {
+                'form': form,
+                'members': members,
+                'totalNumberOfMembers': totalNumberOfMembers,
+                'totalActiveMembers': totalActiveMembers,
+                'maleCount': maleCount,
+                'femaleCount': femaleCount,
+                'newMembers': newMembers
+            }
         except:
             messages.error(request,
                            'ERROR! Please enter valid contact number only. You have entered invalid charactered.')
