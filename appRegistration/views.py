@@ -388,21 +388,32 @@ def export_users_csv(request):
     response['Content-Disposition'] = 'attachment; filename="users.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Name', 'Address', 'City', 'Pincode', 'Contact Number',
-                     'Emergency Contact', 'Email', 'Registration Date', 'Member Number',
-                     'Status', 'Gender', 'Subscription Plan', 'Last Plan Activation Date', 'Plan Expiry Date'])
+    writer.writerow(['Name', 'Father Name', 'Date Of Birth', 'Address 1', 'City 1', 'Pincode 1', 'Address 2', 'City 2',
+                     'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight' 'Emergency Contact',
+                     'Email', 'Registration Date', 'Member Number', 'Status', 'Gender', 'Subscription Plan',
+                     'Last Plan Activation Date', 'Plan Expiry Date'])
 
-    users = memberDetails.objects.filter(memberGymNumber_id=gymNumber).values_list('memberName', 'memberAddress',
-                                                                                   'memberCity', \
-                                                                                   'memberPincode',
+    users = memberDetails.objects.filter(memberGymNumber_id=gymNumber).values_list('memberName',
+                                                                                   'fatherName',
+                                                                                   'dateOfBirth',
+                                                                                   'memberAddress1',
+                                                                                   'memberCity1',
+                                                                                   'memberPincode1',
+                                                                                   'memberAddress2',
+                                                                                   'memberCity2',
+                                                                                   'memberPincode2',
                                                                                    'memberContactNumber',
-                                                                                   'memberEmergencyNumber', \
+                                                                                   'identificationMark',
+                                                                                   'memberHeight',
+                                                                                   'memberWeight',
+                                                                                   'memberEmergencyNumber',
                                                                                    'memberEmail',
                                                                                    'memberRegistrationDate',
-                                                                                   'memberNumber', \
-                                                                                   'memberStatus', 'memberGender',
+                                                                                   'memberNumber',
+                                                                                   'memberStatus',
+                                                                                   'memberGender',
                                                                                    'memberPlan',
-                                                                                   'memberPlanActivationDate', \
+                                                                                   'memberPlanActivationDate',
                                                                                    'memberPlandExpiryDate')
     for user in users:
         writer.writerow(user)
@@ -411,9 +422,6 @@ def export_users_csv(request):
 
 @login_required
 def export_monthly_report(request):
-    # Start: Ensure Gym is registered first
-    User = get_user_model()
-    userId = User.id
     gymRegistered = False
     allGymNumbers = gymDetails.objects.all().values('gymUser_id')
     for i in allGymNumbers:
@@ -421,8 +429,6 @@ def export_monthly_report(request):
             gymRegistered = True
     if not gymRegistered:
         return HttpResponseRedirect("/client/register/")
-    # End
-    User = get_user_model()
     currentMonthStarting = datetime.today().replace(day=1)
     gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
     for elements in gymObj:
@@ -431,22 +437,33 @@ def export_monthly_report(request):
     response['Content-Disposition'] = 'attachment; filename="users.csv"'
 
     writer = csv.writer(response)
-    writer.writerow(['Name', 'Address', 'City', 'Pincode', 'Contact Number',
-                     'Emergency Contact', 'Email', 'Registration Date', 'Member Number',
-                     'Status', 'Gender', 'Subscription Plan', 'Last Plan Activation Date', 'Plan Expiry Date'])
+    writer.writerow(['Name', 'Father Name', 'Date Of Birth', 'Address 1', 'City 1', 'Pincode 1', 'Address 2', 'City 2',
+                     'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight' 'Emergency Contact',
+                     'Email', 'Registration Date', 'Member Number', 'Status', 'Gender', 'Subscription Plan',
+                     'Last Plan Activation Date', 'Plan Expiry Date'])
 
-    users = memberDetails.objects.filter(memberPlanActivationDate__gte=(currentMonthStarting),
-                                         memberGymNumber_id=gymNumber).values_list('memberName', 'memberAddress',
-                                                                                   'memberCity', \
-                                                                                   'memberPincode',
+    users = memberDetails.objects.filter(memberPlanActivationDate__gte=currentMonthStarting,
+                                         memberGymNumber_id=gymNumber).values_list('memberName',
+                                                                                   'fatherName',
+                                                                                   'dateOfBirth',
+                                                                                   'memberAddress1',
+                                                                                   'memberCity1',
+                                                                                   'memberPincode1',
+                                                                                   'memberAddress2',
+                                                                                   'memberCity2',
+                                                                                   'memberPincode2',
                                                                                    'memberContactNumber',
-                                                                                   'memberEmergencyNumber', \
+                                                                                   'identificationMark',
+                                                                                   'memberHeight',
+                                                                                   'memberWeight',
+                                                                                   'memberEmergencyNumber',
                                                                                    'memberEmail',
                                                                                    'memberRegistrationDate',
-                                                                                   'memberNumber', \
-                                                                                   'memberStatus', 'memberGender',
+                                                                                   'memberNumber',
+                                                                                   'memberStatus',
+                                                                                   'memberGender',
                                                                                    'memberPlan',
-                                                                                   'memberPlanActivationDate', \
+                                                                                   'memberPlanActivationDate',
                                                                                    'memberPlandExpiryDate')
     for user in users:
         writer.writerow(user)
