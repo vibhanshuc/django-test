@@ -4,6 +4,7 @@ from django.db import models
 
 GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'),)
 
+
 # Create your models here.
 class memberDetails(models.Model):
     memberName = models.CharField('Full Name', max_length=100)
@@ -26,7 +27,7 @@ class memberDetails(models.Model):
     identificationMark = models.CharField('Identification Mark', max_length=200, blank=True)  # Added by Ravi
     memberHeight = models.IntegerField('Height (in cms)', null=True)  # Added by Ravi
     memberWeight = models.IntegerField('Weight (in kgs)', null=True)  # Added by Ravi
-    memberEmergencyNumber = models.IntegerField('Emergency Contact Number', max_length=14, blank=True)
+    memberEmergencyNumber = models.IntegerField('Emergency Contact Number', blank=True)
     memberEmail = models.EmailField('Email ID', max_length=100)
     memberRegistrationDate = models.DateTimeField('Registration Date')
     memberNumber = models.IntegerField(primary_key=True, null=False)
@@ -34,7 +35,7 @@ class memberDetails(models.Model):
     memberPlan = models.CharField('Subscription Plan', max_length=100)
     memberPlanActivationDate = models.DateTimeField('Subscription Activation Date')
     memberPlandExpiryDate = models.DateTimeField('Subscription Expiry Date')
-    memberProblems = models.CharField('Physical Problem (if any)', max_length=200, blank=True) # Added by Ravi
+    memberProblems = models.CharField('Physical Problem (if any)', max_length=200, blank=True)  # Added by Ravi
     memberGymNumber = models.ForeignKey('gymDetails', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -283,15 +284,15 @@ class gymDetails(models.Model):
         ('ZW', 'Zimbabwe'),
         ('ZZ', 'Others'),
     )
-    gymName = models.CharField('Business Name', max_length=100, )
-    gymCity = models.CharField('City', max_length=100)
+    gymName = models.CharField('Business Name', max_length=100,)
+    gymCity = models.CharField('City', max_length=100,)
     gymAddress = models.TextField('Address')
-    gymPincode = models.IntegerField('Pincode', max_length=9)
+    gymPincode = models.IntegerField('Pincode',)
     gymCountry = models.CharField('Country', max_length=100, choices=COUNTRIES)
     gymRegistrationDate = models.DateTimeField('Registration Date')
-    gymNumber = models.IntegerField(max_length=9, primary_key=True, null=False)
+    gymNumber = models.IntegerField(primary_key=True, null=False)
     BusinessType = (('gym', 'Gym'), ('yoga', 'Yoga'),)
-    gymContactNumber = models.IntegerField('Contact Number', max_length=14)
+    gymContactNumber = models.IntegerField('Contact Number')
     gymEmail = models.EmailField('Email ID', max_length=100)
     gymType = models.CharField('Category', max_length=100, choices=BusinessType)
     gymImage = models.ImageField(upload_to='images/', default='images/img.jpg')
@@ -303,8 +304,8 @@ class gymDetails(models.Model):
 
 class gymPlans(models.Model):
     planName = models.CharField('Plan Name', max_length=100)
-    planDuration = models.IntegerField('Duration (in days)', default=30, max_length=4, blank=False, null=False)
-    planPrice = models.IntegerField('Price/Amount', max_length=9, blank=False, null=False)
+    planDuration = models.IntegerField('Duration (in days)', default=30, blank=False, null=False)
+    planPrice = models.IntegerField('Price/Amount', blank=False, null=False)
     planDescription = models.CharField('Brief Description', max_length=300, blank=True, null=True)
     planGymNumber = models.ForeignKey('gymDetails', on_delete=models.CASCADE)
     planStatus = models.BooleanField('Plan Active', default=True)
@@ -319,12 +320,12 @@ class staffDetails(models.Model):
     staffGender = models.CharField('Gender', max_length=1, choices=GENDER_CHOICES)
     staffCity = models.CharField('City', max_length=100)
     staffAddress = models.TextField('Address', blank=True)
-    staffPincode = models.IntegerField('Pincode', max_length=9, blank=True)
-    staffContactNumber = models.IntegerField('Contact Number', max_length=14)
-    staffEmergencyNumber = models.IntegerField('Emergency Contact Number', max_length=14, blank=True)
+    staffPincode = models.IntegerField('Pincode', blank=True)
+    staffContactNumber = models.IntegerField('Contact Number',)
+    staffEmergencyNumber = models.IntegerField('Emergency Contact Number', blank=True)
     staffEmail = models.EmailField('Email', max_length=100)
     staffRegistrationDate = models.DateTimeField('Registration Date')
-    staffNumber = models.IntegerField(max_length=9, primary_key=True, null=False)
+    staffNumber = models.IntegerField(primary_key=True, null=False)
     staffStatus = models.BooleanField(default=True)
     staffGymNumber = models.ForeignKey('gymDetails', on_delete=models.CASCADE)
 

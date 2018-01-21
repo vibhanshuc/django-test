@@ -397,7 +397,7 @@ def export_users_csv(request):
     writer.writerow(['Name', 'Father Name', 'Date Of Birth', 'Address 1', 'City 1', 'Pincode 1', 'Address 2', 'City 2',
                      'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight', 'Emergency Contact',
                      'Email', 'Registration Date', 'Member Number', 'Status', 'Gender', 'Subscription Plan',
-                     'Last Plan Activation Date', 'Plan Expiry Date'])
+                     'Last Plan Activation Date', 'Plan Expiry Date', 'Due Amount', 'Paid Amount'])
 
     users = memberDetails.objects.filter(memberGymNumber_id=gymNumber).values_list('memberName',
                                                                                    'fatherName',
@@ -420,7 +420,10 @@ def export_users_csv(request):
                                                                                    'memberGender',
                                                                                    'memberPlan',
                                                                                    'memberPlanActivationDate',
-                                                                                   'memberPlandExpiryDate')
+                                                                                   'memberPlandExpiryDate',
+                                                                                   'dueAmount',
+                                                                                   'paidAmount'
+                                                                                   )
     for user in users:
         writer.writerow(user)
     return response
@@ -446,7 +449,7 @@ def export_monthly_report(request):
     writer.writerow(['Name', 'Father Name', 'Date Of Birth', 'Address 1', 'City 1', 'Pincode 1', 'Address 2', 'City 2',
                      'Pincode 2', 'Contact Number', 'Identification Mark', 'Height', 'Weight', 'Emergency Contact',
                      'Email', 'Registration Date', 'Member Number', 'Status', 'Gender', 'Subscription Plan',
-                     'Last Plan Activation Date', 'Plan Expiry Date'])
+                     'Last Plan Activation Date', 'Plan Expiry Date', 'Due Amount', 'Paid Amount'])
 
     users = memberDetails.objects.filter(memberPlanActivationDate__gte=currentMonthStarting,
                                          memberGymNumber_id=gymNumber).values_list('memberName',
@@ -470,7 +473,9 @@ def export_monthly_report(request):
                                                                                    'memberGender',
                                                                                    'memberPlan',
                                                                                    'memberPlanActivationDate',
-                                                                                   'memberPlandExpiryDate')
+                                                                                   'memberPlandExpiryDate',
+                                                                                   'dueAmount',
+                                                                                   'paidAmount',)
     for user in users:
         writer.writerow(user)
 
