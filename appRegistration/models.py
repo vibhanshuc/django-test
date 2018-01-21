@@ -5,12 +5,24 @@ from django.db import models
 # Create your models here.
 class memberDetails(models.Model):
     memberName = models.CharField('Full Name', max_length=100)
+    fatherName = models.CharField('Fathers Name', max_length=100) # Added by Ravi
+    dateOfBirth = models.DateTimeField('Date of Birth') # Added by Ravi
     GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'),)
     memberGender = models.CharField('Gender', max_length=1, choices=GENDER_CHOICES)
-    memberCity = models.CharField('City', max_length=100)
-    memberAddress = models.TextField('Address', blank=True)
-    memberPincode = models.IntegerField('Pincode', max_length=9, blank=True)
+    #memberCity = models.CharField('City', max_length=100)
+
+    ######### addresses: Added by Ravi  ################
+    memberAddress1 = models.TextField('Permanent Address', blank=True) 
+    memberCity1 = models.CharField('City', max_length=100)
+    memberPincode1 = models.IntegerField('Pincode', max_length=9, blank=True)
+    memberAddress2 = models.TextField('Correspondence Address', blank=True) 
+    memberCity2 = models.CharField('City', max_length=100)
+    memberPincode2 = models.IntegerField('Pincode', max_length=9, blank=True)
+
     memberContactNumber = models.IntegerField('Contact Number', max_length=14)
+    identificationMark = models.CharField('Identification Mark', max_length=200) # Added by Ravi
+    memberHeight = models.IntegerField('Height (in cms)', max_length=3) # Added by Ravi
+    memberWeight = models.IntegerFiled('Weight (in kgs)', max_length=3) # Added by Ravi
     memberEmergencyNumber = models.IntegerField('Emergency Contact Number', max_length=14, blank=True)
     memberEmail = models.EmailField('Email ID', max_length=100)
     memberRegistrationDate = models.DateTimeField('Registration Date')
@@ -19,6 +31,7 @@ class memberDetails(models.Model):
     memberPlan = models.CharField('Subscription Plan', max_length=100)
     memberPlanActivationDate = models.DateTimeField('Subscription Activation Date')
     memberPlandExpiryDate = models.DateTimeField('Subscription Expiry Date')
+    memberProblems = models.CharField('Physical Problem (if any)', max_length=200) # Added by Ravi
     memberGymNumber = models.ForeignKey('gymDetails', on_delete=models.CASCADE)
 
     def __str__(self):
