@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'),)
@@ -16,6 +17,10 @@ class memberDetails(models.Model):
     memberAddress2 = models.TextField('Correspondence Address', blank=True) 
     memberCity2 = models.CharField('City', max_length=100, blank=True)
     memberPincode2 = models.IntegerField('Pincode', null=True)
+    dueAmount = models.IntegerField('Due Amount', default=0,
+                                    validators=[MaxValueValidator(1000000), MinValueValidator(0)])
+    paidAmount = models.IntegerField('Paid Amount', default=0,
+                                     validators=[MaxValueValidator(1000000), MinValueValidator(0)])
 
     memberContactNumber = models.IntegerField('Contact Number')
     identificationMark = models.CharField('Identification Mark', max_length=200, blank=True)  # Added by Ravi

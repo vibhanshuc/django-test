@@ -5,6 +5,7 @@ urlpatterns = [
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^accounts/', include('registration.backends.hmac.urls')),
     url(r'^client/register/$', views.clientRegistration, name='clientRegistration'),
+    url(r'^unpaid/$', views.listOfUnpaidMembers, name='listOfUnpaidMembers'),
     url(r'^client/plans/$', views.clientPlans, name='clientPlans'),
     url(r'^client/activateplan/$', views.clientActivatePlan, name='clientActivatePlan'),
     url(r'^member/register/$', views.memberRegistration, name='memberRegistration'),

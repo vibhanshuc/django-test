@@ -18,7 +18,6 @@ from .models import gymDetails, memberDetails, gymPlans, staffDetails
 @login_required
 def dashboard(request):
     # Start: Ensure Gym is registered first
-    User = get_user_model()
     gymRegistered = False
     allGymNumbers = gymDetails.objects.all().values('gymUser_id')
     for i in allGymNumbers:
@@ -92,11 +91,20 @@ def dashboard(request):
         'today_femaleCount': today_femaleCount,
         'todaysCollection': todaysCollection,
         'totalCollection': totalCollection,
-        'expired_as_dict': expired_as_dict
+        'expired_as_dict': expired_as_dict,
+        'totalNumberOfUnpaidMembers': memberDetails.objects.filter(dueAmount__gte=0, memberGymNumber_id=gymNumber).count()
     }
     finalContext = {**common, **context}  # append the dictionaries
     return render(request, 'dashboard.html', context=finalContext)
 
+
+@login_required
+def listOfUnpaidMembers(request):
+    gymObj = gymDetails.objects.filter(gymUser_id=request.user.id).values()
+    for elements in gymObj:
+        gymNumber = elements['gymNumber']
+    members = memberDetails.objects.filter(dueAmount__gte=0, memberGymNumber_id=gymNumber )
+    return render(request, 'unpaid.html', context={ 'members': members, 'totalMembers': len(members)})
 
 @login_required
 def clientRegistration(request):
