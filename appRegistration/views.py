@@ -814,7 +814,6 @@ def edituser(request):
             memberDetails.objects.filter(memberContactNumber=input, memberGymNumber_id=gymNumber).delete()
             messages.success(request, 'Member DELETED successfully.')
     elif 'Search' in request.POST:
-        print('???????????')
         form = memberActivatePlanForm(request.POST or None)
         if form.is_valid():
             input = form.cleaned_data['Search']
@@ -832,9 +831,8 @@ def edituser(request):
             input = request.POST['memberContactNumber']
 
             my_record = memberDetails.objects.get(memberContactNumber=input, memberGymNumber_id=gymNumber)
-            form = memberDetailsForm(request.POST, instance=my_record)
+            form = memberDetailsForm(request.POST, request.FILES, instance=my_record)
             if form.is_valid():
-                save_it = form.save(commit=False)
                 form.save()
                 form.fields['memberContactNumber'].widget.attrs['readonly'] = True
                 messages.success(request, 'Member details updated successfully.')
@@ -861,7 +859,6 @@ def clientEdit(request):
     if request.POST:
         print('inside')
         form = gymDetailsForm(request.POST, request.FILES, instance=my_record)
-        save_it = form.save(commit=False)
         form.save()
         messages.success(request, 'Business details updated successfully.')
     common = commonDisplay(request)

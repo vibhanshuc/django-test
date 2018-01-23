@@ -35,6 +35,7 @@ class memberDetails(models.Model):
     memberPlan = models.CharField('Subscription Plan', max_length=100)
     memberPlanActivationDate = models.DateTimeField('Subscription Activation Date')
     memberPlandExpiryDate = models.DateTimeField('Subscription Expiry Date')
+    profileImage = models.ImageField(upload_to='images/', default='images/img.jpg')
     memberProblems = models.CharField('Physical Problem (if any)', max_length=200, blank=True)  # Added by Ravi
     memberGymNumber = models.ForeignKey('gymDetails', on_delete=models.CASCADE)
 

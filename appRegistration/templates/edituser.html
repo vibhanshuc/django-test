@@ -33,7 +33,8 @@
                     {% endif %}
 
                 </p>
-                <form action="{% url 'edituser' %}" method="post">{% csrf_token %}
+                <form action="{% url 'edituser' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="form-group">
                         <div class="col-md-7">
                             {{ form.as_p }}
